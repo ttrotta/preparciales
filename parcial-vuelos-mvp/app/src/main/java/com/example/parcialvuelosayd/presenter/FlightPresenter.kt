@@ -22,12 +22,12 @@ class FlightPresenterImpl(
 
     override fun fetchVuelos(paisSeleccionado: String) {
         thread {
-            val result = flightRepository.fetchVuelos(paisSeleccionado)
+            val result = flightRepository.fetchVuelos(getPaises().find { it.name == paisSeleccionado }!!)
             observer.notify(Pair(paisSeleccionado, result))
         }
     }
 
     override fun getPaises(): List<Country> {
-        return countryRepository.obtenerPaises()
+        return countryRepository.getPaises()
     }
 }

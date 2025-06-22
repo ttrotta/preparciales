@@ -24,12 +24,9 @@ object FlightInjector {
         val serviceResolver = JsonToVueloResolverImpl()
         val flightService = FlightServiceImpl(serviceResolver)
 
-
         val flightRepository: FlightRepository = FlightRepositoryImpl(flightLocalStorage, flightService)
         val countryRepository: CountryRepository = CountryRepositoryImpl()
 
         presenter = FlightPresenterImpl(flightRepository, countryRepository)
-
-
     }
 }

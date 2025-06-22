@@ -19,6 +19,7 @@ class FlightActivity : AppCompatActivity() {
     private lateinit var adapter: ArrayAdapter<Country>
     private lateinit var message: TextView
     private lateinit var messageVuelo: TextView
+
     private lateinit var paises: List<Country>
 
     private lateinit var presenter: FlightPresenter
@@ -31,6 +32,8 @@ class FlightActivity : AppCompatActivity() {
         paises = presenter.getPaises()
 
         initViewProperties()
+        spinner.adapter = adapter
+
         addListener()
         initializeObserver()
     }
@@ -46,7 +49,6 @@ class FlightActivity : AppCompatActivity() {
 
         adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, paises)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
 
         message = findViewById<TextView>(R.id.textMensaje)
         messageVuelo = findViewById<TextView>(R.id.textVuelo)
