@@ -1,13 +1,13 @@
 package com.example.parcialvuelosayd.model.repository.vuelos.external
 
-import android.util.Log
 import com.example.parcialvuelosayd.model.BoundingBox
 import java.net.URL
 
-private const val URL = "https://opensky-network.org/api/states/all?lamin="
+private const val URL = "https://opensky-network.org/api/states/all"
+private const val LATITUD_MIN = "?lamin="
+private const val LATITUD_MAX = "&lamax="
 private const val LONGITUD_MIN = "&lomin="
 private const val LONGITUD_MAX = "&lomax="
-private const val LATITUD_MAX = "&lamax="
 
 interface FlightService {
     fun getVuelos(pais: BoundingBox): MutableList<String>
@@ -34,6 +34,10 @@ class FlightServiceImpl (
     }
 
     private fun prepareURL(pais: BoundingBox?): String {
-        return "$URL${pais?.latMin}$LONGITUD_MIN${pais?.lonMin}$LATITUD_MAX${pais?.latMax}$LONGITUD_MAX${pais?.lonMax}"
+        return URL +
+                "$LATITUD_MIN${pais?.latMin}" +
+                "$LONGITUD_MIN${pais?.lonMin}" +
+                "$LATITUD_MAX${pais?.latMax}" +
+                "$LONGITUD_MAX${pais?.lonMax}"
     }
 }
