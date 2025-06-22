@@ -1,0 +1,47 @@
+1. El flujo de control del proyecto comienza desde la view en la Activity. Tenemos un
+spinner y adapter que van a mostrar desde la interfaz las opciones de los paises que
+queremos consultar, y una vez elijamos uno desde el codigo lo va a detectar y va a 
+llamar a una clase para que haga fetchVuelos(paisSeleccionado). Si notamos bien,
+la clase MainScreen está susbcripta a esta clase ya que la conoce, entonces cuando 
+le pidamos este dato estaremos esperando a que se notifique y se active la funcion 
+onVuelo. Antes el dato se obtuvo desde SomeClass el cuál llama a otra clase
+que conoce (la cuál sería una consulta al modelo) y pide nuevamente el dato
+con pasandole el mismo país. Una vez que lo obtiene, entonces ya es capaz de 
+notificarlo a la view. El proyecto depende entonces de la API OpenSky para
+traer los datos desde este servicio, y también ocupa la caché de Android localmente.
+Luego para parsear datos con los JSON se tiene que depender de la libreria
+Gson.
+
+Esto es claramente un caso de patrón MVP, donde la Vista conoce al Presenter 
+para avisarle el dato que se busca, y se suscribe para que se lo devuelva 
+notificado. El Presenter se comunica con el Modelo, dónde es el único que lo conoce
+a diferencia de MVP. Y espera por esa data. Una vez que la tiene, entonces ya puede
+notificar a la vista para que muestre los cambios en pantalla.
+
+Entonces como se pudo ver todas estas responsabilidades, simplemente con
+nombres que no las caracterizan es que se basa la eleccion. 
+
+2. Las violaciones SOLID que se dan es que primero que todo no se cumple el principio
+de responsabilidad única en muchas funciones y clases. Esto se puede apreciar
+cómo vemos que desde la funcion de la view se hacen más de una cosa 
+en OnCreate, o desde la view misma quien se encarga de inyectar las dependencias
+manualmente. Esto tampoco se cumple en por ejemplo en DataRepo, donde
+se podía notar que la funcion fetchVuelos se encargaba de hacer toda la logica
+de local y externa en un mismo lugar. Desde ApiY y tambien, donde desde 
+un mismo lugar se preparaba la llamada a la API, se traia la data y ahi mismo
+se parseaba todo sin utilizar un Resolver. Respecto a OpenClose lo viola en 
+por ejemplo estando la lista de Países en la vista cuando esto no deber´ía estar
+ahí sino que tendría más sentido tener un repositorio que guarde los países,
+y en cualquier caso si queremos agregar uno, hacerlo unicamente ahí, por lo 
+cuál tambien respetamos la S ya que si queríamos cambiar un país teniamos 
+que modificar la Vista. Luego la D de Inyeccion de Dependencias no la cumplia
+nunca, ya que no se utilizaban interfaces, entonces no cumpl´ía el principio
+de que hay que depender de abstracciones y no implementaciones, donde
+en una clase se usaba la Impl en vez de la interfaz como puede ser en la view 
+con el presenter, o dependiendo de la implemetnacioon del modelo desde 
+presenter. Esto de realizar interfaces, también daba pie a cumplir el principio
+de segregacion de interfaces para el observer en presenter. Ya que subject
+contiene otras funciones que desde la view no se debería conocer más que 
+susbcribirse o desuscribirse, y se tiene que usar en el presenter ya si a Subject
+ya que necesitamos notificar y está si implementa a Publisher que es lo otro 
+que necesitamos. 
